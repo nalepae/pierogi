@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket demo</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <div id="graph"></div>
+    <script>
+      var ws = new WebSocket("ws://127.0.0.1:9559/");
+
+      Plotly.plot("graph", [
+        {
+          y: [],
+          mode: "lines+markers",
+          marker: { color: "green", size: 8 },
+          line: { width: 4 }
+        }
+      ]);
+
+      ws.onmessage = function(event) {
+        console.log(event.data);
+        Plotly.extendTraces(
+          "graph",
+          {
+            y: [[event.data]]
+          },
+          [0]
+        );
+      };
+    </script>
+  </body>
+</html>
