@@ -21,6 +21,8 @@
 </tr>
 </table>
 
+![Training MNIST](https://github.com/nalepae/pierogi/blob/master/docs/mnist_train.gif)
+
 ## Installation
 
 `$ pip install pierogi [--user]`
