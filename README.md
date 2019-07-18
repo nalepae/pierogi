@@ -68,3 +68,8 @@ pierogi.stop()
 **WARNING**: In this case, don't forget to call the stop method at the end, 
 else your program/console will has trouble to close
 
+## Examples
+**MNIST** training example is available [here](https://github.com/nalepae/pierogi/blob/master/docs/mnist.py).
+This example is directly extracted from official PyTorch example repository, [here](https://github.com/pytorch/examples/blob/master/mnist/main.py).
+
+Modified lines number from the orinal files are: 10, 32, 47, 119 & 121.
