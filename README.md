@@ -2,7 +2,7 @@
 
 **Pierogi** is a tool to plot your model training loss curve, in real time, directly in your web browser.
 
-⚠️ **Warning**: Version 1 of **Pierogi** is not yet released, so API breakage should (and probably will) occur! ⚠️
+⚠️ **Warning**: Version 1 of **Pierogi** is not yet released, so API breakage could (and probably will) occur! ⚠️
 
 <table>
 <tr>
