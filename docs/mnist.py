@@ -44,10 +44,10 @@ def train(args, model, device, train_loader, optimizer, epoch, pierogi):
                 100. * batch_idx / len(train_loader), loss.item())
             print(message)
 
-            pierogi.append_training_loss(loss.item())
+            pierogi.plot_loss(epoch, batch_idx, loss.item())
 
 
-def test(args, model, device, test_loader):
+def test(args, model, device, test_loader, epoch, pierogi):
     model.eval()
     test_loss = 0
     correct = 0
@@ -66,6 +66,8 @@ def test(args, model, device, test_loader):
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
+
+    pierogi.plot_loss(epoch + 1, 0, test_loss, "validation")
 
 
 def main():
@@ -117,9 +119,14 @@ def main():
                           momentum=args.momentum)
 
     with Pierogi() as pierogi:
+        pierogi.configure(nb_epochs=args.epochs,
+                          nb_batches_per_epoch=len(train_loader))
+
         for epoch in range(1, args.epochs + 1):
             train(args, model, device, train_loader, optimizer, epoch, pierogi)
-            test(args, model, device, test_loader)
+            test(args, model, device, test_loader, epoch, pierogi)
+
+        input("Press enter to exit")
 
     if (args.save_model):
         torch.save(model.state_dict(), "mnist_cnn.pt")

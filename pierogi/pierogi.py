@@ -2,6 +2,7 @@ from .utils.websocket import WebSocketServer as _WebSocketServer
 import webbrowser as _webbrowser
 import os as _os
 import os.path as _path
+import json as _json
 
 _LOC = _path.realpath(_path.join(_os.getcwd(), _path.dirname(__file__)))
 _WEB_APP_PATH = _os.path.join(_LOC, "webapp", 'pierogi.html')
@@ -62,9 +63,28 @@ class Pierogi():
         """Stop"""
         self.__web_socket_server.stop()
 
-    def append_training_loss(self, training_loss):
-        """Append the training loss"""
-        self.__web_socket_server.send(str(training_loss))
+    def configure(self, nb_epochs=None, nb_batches_per_epoch=None):
+        to_send = {}
+        if nb_epochs:
+            to_send["nb_epochs"] = nb_epochs
+
+        if nb_batches_per_epoch:
+            to_send["nb_batches_per_epoch"] = nb_batches_per_epoch
+
+        self.__web_socket_server.send(_json.dumps(to_send))
+
+    def plot_loss(self, epoch, batch, loss, type="train"):
+        """Append the train loss
+
+        Positional argument:
+        loss - The train loss
+
+        Keyword argument:
+        type - Has to be "train" or "validation"
+        """
+        to_send = {"epoch": epoch, "batch": batch, f"{type}_loss": loss}
+
+        self.__web_socket_server.send(_json.dumps(to_send))
 
     def __enter__(self):
         self.start()

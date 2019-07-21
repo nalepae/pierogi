@@ -1,32 +1,112 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>WebSocket demo</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Pierogi</title>
+    <script src="node_modules/chart.js/dist/Chart.js"></script>
   </head>
-  <body>
-    <div id="graph"></div>
-    <script>
-      var ws = new WebSocket("ws://127.0.0.1:9559/");
 
-      Plotly.plot("graph", [
-        {
-          y: [],
-          mode: "lines+markers",
-          marker: { color: "green", size: 8 },
-          line: { width: 4 }
+  <body>
+    <div style="width:75%;">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+      window.chartColors = {
+        red: "rgb(255, 99, 132)",
+        orange: "rgb(255, 159, 64)",
+        yellow: "rgb(255, 205, 86)",
+        green: "rgb(75, 192, 192)",
+        blue: "rgb(54, 162, 235)",
+        purple: "rgb(153, 102, 255)",
+        grey: "rgb(201, 203, 207)"
+      };
+
+      var ws = new WebSocket("ws://127.0.0.1:9559/");
+      var nb_batches_per_epoch = 0;
+
+      var config = {
+        type: "line",
+        data: {
+          datasets: [
+            {
+              label: "Validation",
+              backgroundColor: window.chartColors.blue,
+              borderColor: window.chartColors.blue,
+              fill: false,
+              data: []
+            },
+            {
+              label: "Train",
+              backgroundColor: window.chartColors.orange,
+              borderColor: window.chartColors.orange,
+              fill: false,
+              data: []
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            text: "Pierogi"
+          },
+          scales: {
+            xAxes: [
+              {
+                type: "linear",
+                scaleLabel: {
+                  display: true,
+                  labelString: "Batch"
+                },
+                ticks: {
+                  min: 0
+                }
+              }
+            ],
+            yAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: "Loss"
+                },
+                ticks: {
+                  min: 0
+                }
+              }
+            ]
+          }
         }
-      ]);
+      };
+
+      window.onload = function() {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+      };
 
       ws.onmessage = function(event) {
-        console.log(event.data);
-        Plotly.extendTraces(
-          "graph",
-          {
-            y: [[event.data]]
-          },
-          [0]
-        );
+        var data = JSON.parse(event.data);
+
+        if ("train_loss" in data) {
+          var abs_batch = (data.epoch - 1) * nb_batches_per_epoch + data.batch;
+
+          var to_push = { x: abs_batch, y: data.train_loss };
+          config.data.datasets[1].data.push(to_push);
+        }
+
+        if ("validation_loss" in data) {
+          console.log("prout");
+          var abs_batch = (data.epoch - 1) * nb_batches_per_epoch + data.batch;
+
+          var to_push = { x: abs_batch, y: data.validation_loss };
+          config.data.datasets[0].data.push(to_push);
+        }
+
+        if ("nb_epochs" in data) {
+          nb_batches_per_epoch = data.nb_batches_per_epoch;
+          var nb_total_batches = data.nb_epochs * nb_batches_per_epoch;
+          console.log(nb_total_batches);
+          config.options.scales.xAxes[0].ticks.suggestedMax = nb_total_batches;
+        }
+        window.myLine.update();
       };
     </script>
   </body>

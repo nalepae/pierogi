@@ -1,1 +1,2 @@
 recursive-include pierogi *.html
+recursive-include pierogi node_modules *
