@@ -35,19 +35,11 @@
 from pierogi.pierogi import Pierogi
 
 with Pierogi() as pierogi:
-    # Configure Pierogi
-    pierogi.configure(<nb_epochs>, <nb_batches_per_epoch>)
+    # Plot train loss
+    pierogi.plot_loss(<epoch>, <batch_index>, <train_loss>, "train")
 
-    # Classic PyTorch training loop
-    for epoch in range(1, <nb_epochs> + 1):
-        for batch_idx, (data, target) in enumerate(<train_loader>):
-            # Put here your classic training step
-
-            # Plot train loss
-            pierogi.plot_loss(epoch, batch_idx, <train_loss>, "train")
-
-        # Put here your classic validation loss computation
-        pierogi.plot_loss(epoch + 1, 0, <validation_loss>, "validation")
+    # Plot validation loss
+    pierogi.plot_loss(<epoch>, <batch_index>, <validation_loss>, "validation")
 
     # Pierogi will be closed (and so data not retrievable any more on the
     # web browser) after the following input
@@ -67,16 +59,11 @@ pierogi.start()
 # Configure Pierogi
 pierogi.configure(<nb_epochs>, <nb_batches_per_epoch>)
 
-# Classic PyTorch training loop
-for epoch in range(1, <nb_epochs> + 1):
-    for batch_idx, (data, target) in enumerate(<train_loader>):
-        # Put here your classic training step
+# Plot train loss
+pierogi.plot_loss(<epoch>, <batch_index>, <train_loss>, "train")
 
-        # Plot train loss
-        pierogi.plot_loss(epoch, batch_idx, <train_loss>, "train")
-
-    # Put here your classic validation loss computation
-    pierogi.plot_loss(epoch + 1, 0, <validation_loss>, "validation")
+# Plot validation loss
+pierogi.plot_loss(<epoch>, <batch_index>, <validation_loss>, "validation")
 
 pierogi.stop()
 ```
@@ -89,4 +76,10 @@ else your program/console will has trouble to close
 **MNIST** training example is available [here](https://github.com/nalepae/pierogi/blob/master/docs/mnist.py).
 This example is directly extracted from official PyTorch example repository, [here](https://github.com/pytorch/examples/blob/master/mnist/main.py).
 
-Modified lines number from the orinal files are: 10, 32, 47, 50, 70, 121 => 123, 126 => 129.
+Modified lines number from the original files are: 10, 32, 47, 50, 70, 121 => 123 & 126 => 129.
+
+To get the same result as the gif at the beginning of this readme, just write in a console:
+```bash
+$ ./mnist.py --epochs 3
+```
+
