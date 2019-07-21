@@ -23,6 +23,8 @@
 
 ![Training MNIST](https://github.com/nalepae/pierogi/blob/master/docs/mnist_train.gif)
 
+⚠️ **Warning**: Version 1 of **Pierogi** is not yet released, so API breakage should (and probably will) occur! ⚠️
+
 ## Installation
 
 `$ pip install pierogi [--user]`
